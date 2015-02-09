@@ -133,5 +133,5 @@ Screenshots
 
 .. External References Below. Nothing Below This Line Should Be Rendered
 
-.. _Latest Package for Python 2.7: https://github.com/jcurry/ZenPacks.skills1st.addEventFields/blob/master/dist/ZenPacks.skills1st.addEventFields-1.0.0-py2.7.egg?raw=true
+.. _Latest Package for Python 2.7: https://github.com/jcurry/ZenPacks.skills1st.WinSnmp/blob/master/dist/ZenPacks.skills1st.WinSnmp-1.0.0-py2.7.egg?raw=true
 
