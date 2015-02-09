@@ -1,0 +1,3 @@
+[zenoss.zenpacks]
+ZenPacks.skills1st.WinSnmp = ZenPacks.skills1st.WinSnmp
+

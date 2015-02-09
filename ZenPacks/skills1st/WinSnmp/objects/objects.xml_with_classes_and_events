@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<objects>
+<!-- ('', 'zport', 'dmd', 'Devices', 'Server', 'Windows', 'Snmp') -->
+<object id='/zport/dmd/Devices/Server/Windows/Snmp' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<object id='1 Processors' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+</object>
+<object id='2 Processors' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+</object>
+<object id='4 Processors' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+</object>
+<object id='8 Processors' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+</object>
+<object id='16 Processors' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+</object>
+</object>
+<!-- ('', 'zport', 'dmd', 'Events', 'Perf', 'Memory', 'Snmp') -->
+<object id='/zport/dmd/Events/Perf/Memory/Snmp' module='Products.ZenEvents.EventClass' class='EventClass'>
+<property type="text" id="transform" mode="w" >
+# Added for SnmpPerfMonitor ZenPack
+import re
+if re.search('threshold of Memory', evt.summary):
+    dev = dmd.Devices.findDevice(evt.ipAddress)
+    if dev.getRRDValue('MemoryUsed') and dev.getRRDValue('MemoryTotal'):
+        percentUsed = round(dev.getRRDValue('MemoryUsed') * 100 / dev.getRRDValue('MemoryTotal'))
+        if re.search('threshold of Memory exceeded', evt.summary):
+            status = 'exceeded'
+        if re.search('threshold of Memory restored', evt.summary):
+            status = 'restored'
+        evt.summary = "threshold of Memory %s: current value %3.1f percent" % (status,percentUsed)
+        evt.message = "threshold of Memory %s: current value %3.1f percent" % (status,percentUsed)
+
+import re
+if re.search('threshold of Paging', evt.summary):
+    dev = dmd.Devices.findDevice(evt.ipAddress)
+    if dev.getRRDValue('PagingUsed') and dev.getRRDValue('PagingTotal'):
+        percentUsed = round(dev.getRRDValue('PagingUsed') * 100 / dev.getRRDValue('PagingTotal'))
+        if re.search('threshold of Paging exceeded', evt.summary):
+            status = 'exceeded'
+        if re.search('threshold of Paging restored', evt.summary):
+            status = 'restored'
+        evt.summary = "threshold of Paging %s: current value %3.1f percent" % (status,percentUsed)
+        evt.message = "threshold of Paging %s: current value %3.1f percent" % (status,percentUsed)
+</property>
+</object>
+</objects>

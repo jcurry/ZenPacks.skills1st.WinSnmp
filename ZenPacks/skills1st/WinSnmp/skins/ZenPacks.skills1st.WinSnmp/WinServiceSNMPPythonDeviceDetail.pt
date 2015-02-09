@@ -1,0 +1,93 @@
+<tal:block metal:use-macro="here/templates/macros/page2">
+<tal:block metal:fill-slot="contentPane">
+
+<form method="post"
+    name="WinServiceSNMPPythonDeviceDetail" tal:attributes="action string:${here/absolute_url_path}/${template/id}">
+
+<tal:block metal:define-macro="WinServiceSNMPPythonDeviceFormList"
+tal:define="tableName string:WinServiceSNMPPythonDeviceFormList;
+objects here/WinServiceSNMPPython/objectValuesAll;
+tabletitle string:Windows Services;
+batch python:here.ZenTableManager.getBatch(tableName,objects,
+                                        sortedHeader='Service');
+ts python:here.ZenTableManager.getTableState(tableName);
+menu_id string:WinServiceSNMPPython;
+showfilterbox python:False;">
+<input type="hidden" name="context" value="WinServiceSNMPPython"/>
+<tal:block metal:use-macro="here/zenuimacros/macros/zentable">
+
+<tal:block metal:fill-slot="zentablecontents">
+<!-- BEGIN TABLE CONTENTS -->
+<tr tal:condition="objects">
+    <th class="tableheader" width="20"></th>
+    <th tal:replace="structure python:here.ZenTableManager.getTableHeader(
+                        tableName,'Service','Service', attributes='width=50%')">lv5
+    </th>
+    <th tal:replace="structure python:here.ZenTableManager.getTableHeader(
+                    tableName,'RunState','Run State', attributes='width=50%')" />
+    <th tal:replace="structure python:here.ZenTableManager.getTableHeader(
+                    tableName,'Status','Status', attributes='width=15')" />
+    <th class="tableheader" align="left" width="10">M</th>
+    <th class="tableheader" align="center" width="60">Lock</th>
+</tr>
+<tr tal:condition="not:objects">
+    <th class="tableheader" align="left">
+        No Windows Services found. Check that you have the correct collector plugin configured and that you have remodeled.
+    </th>
+</tr>
+<tal:block tal:repeat="WinServiceSNMPPython batch">
+
+<tr tal:define="odd repeat/WinServiceSNMPPython/odd"
+    tal:attributes="class python:test(odd, 'odd', 'even')">
+    <td class="tablevalues" align="center">
+       <input type="checkbox" name="componentNames:list"
+              tal:attributes="value WinServiceSNMPPython/getRelationshipManagerId"/>
+    </td>
+
+  <td class="tablevalues">
+    <a class=tablevalues tal:content="WinServiceSNMPPython/WinServiceSNMPName"
+    tal:attributes="href WinServiceSNMPPython/getPrimaryUrlPath"/>
+  </td>
+
+  <td class="tablevalues"
+      tal:content="python:WinServiceSNMPPython.getStatus()==0 and 'Started' or WinServiceSNMPPython.getStatus()==-1 and 'Not Monitored' or 'Stopped'"/>
+
+  <td class="tablevalues" align="center">
+  <img border="0"
+    tal:attributes="src python:test(WinServiceSNMPPython.getStatus()==0,
+        here.getStatusImgSrc(0),
+        WinServiceSNMPPython.getStatus()==-1,
+        here.getStatusImgSrc(-1),
+        here.getStatusImgSrc(3))" />
+  </td>
+  <td class="tablevalues" align="left">
+      <img border="0" tal:attributes="src python:test(WinServiceSNMPPython.monitored(),
+           here.os.getStatusImgSrc(0),
+           here.os.getStatusImgSrc(-1))" />
+  </td>
+  <td class="tablevalues" align="center">
+      <img tal:condition="WinServiceSNMPPython/isLockedFromDeletion"
+           border="0" src="locked-delete-icon.png">
+      <img tal:condition="WinServiceSNMPPython/isLockedFromUpdates"
+           border="0" src="locked-update-icon.png">
+      <img tal:condition="WinServiceSNMPPython/sendEventWhenBlocked"
+           border="0" src="locked-sendevent-icon.png">
+  </td>
+
+</tr>
+    </tal:block>
+    <tr>
+        <td colspan="7" class="tableheader" align='center'>
+        <form metal:use-macro="here/zenTableNavigation/macros/navtool"></form>
+        </td>
+    </tr>
+
+<!-- END TABLE CONTENTS -->
+</tal:block>
+</tal:block>
+</tal:block>
+
+</form>
+
+</tal:block>
+</tal:block>
