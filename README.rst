@@ -1,5 +1,5 @@
 ============================================================================
-ZenPack to manage SNMP devices using SNMP using the Python Collector ZenPack
+ZenPack to manage SNMP devices using the Python Collector ZenPack
 ============================================================================
 
 Description
@@ -73,6 +73,7 @@ community.snmp.WinServiceMap: This plugin is required during modeling. It curren
 
 Events
 ======
+
 This ZenPack ships 2 events that are used with thresholds and templates.  Both have transforms.
     * /Perf/Memory/Snmp
     * /Status/WinServiceSNMPPython

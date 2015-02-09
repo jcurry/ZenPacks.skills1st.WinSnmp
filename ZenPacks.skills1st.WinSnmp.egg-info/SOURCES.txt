@@ -1,5 +1,4 @@
 MANIFEST.in
-README.txt
 setup.py
 ZenPacks/__init__.py
 ZenPacks/__init__.pyc
@@ -35,7 +34,6 @@ ZenPacks/skills1st/WinSnmp/browser/configure.zcml
 ZenPacks/skills1st/WinSnmp/browser/resources/css/placeholder.txt
 ZenPacks/skills1st/WinSnmp/browser/resources/img/placeholder.txt
 ZenPacks/skills1st/WinSnmp/browser/resources/js/ExampleDevice.js
-ZenPacks/skills1st/WinSnmp/datasources/.CmdSnmpMemDataSource.py.swp
 ZenPacks/skills1st/WinSnmp/datasources/CmdSnmpCpuDataSource.py
 ZenPacks/skills1st/WinSnmp/datasources/CmdSnmpCpuDataSource.pyc
 ZenPacks/skills1st/WinSnmp/datasources/CmdSnmpMemDataSource.py
