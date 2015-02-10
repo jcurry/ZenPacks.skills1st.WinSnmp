@@ -224,12 +224,12 @@ class SnmpServPlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
         # Open the Snmp AgentProxy connection
-        snmp_proxy = get_snmp_proxy(ds0, config)
+        self._snmp_proxy = get_snmp_proxy(ds0, config)
 
         # NB NB NB - When getting scalars, they must all come from the SAME snmp table
 
         # Now get data - 1 scalar OIDs
-        d=getScalarStuff(snmp_proxy, [ svSvcNumber,]) 
+        d=getScalarStuff(self._snmp_proxy, [ svSvcNumber,]) 
         return d
 
     def onResult(self, result, config):
@@ -348,6 +348,6 @@ class SnmpServPlugin(PythonDataSourcePlugin):
         You can omit this method if you want the result of either the
         onSuccess or onError method to be used without further processing.
         """
-
+        self._snmp_proxy.close()
         return result
 

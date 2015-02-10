@@ -245,8 +245,8 @@ class SnmpMemPlugin(PythonDataSourcePlugin):
         for any log messages.
         """
         ds0 = config.datasources[0]
-        snmp_proxy = get_snmp_proxy(ds0, config)
-        d = getTableStuff(snmp_proxy, [hrStorageType, hrStorageAllocationUnits, hrStorageSize, hrStorageUsed, ] )
+        self._snmp_proxy = get_snmp_proxy(ds0, config)
+        d = getTableStuff(self._snmp_proxy, [hrStorageType, hrStorageAllocationUnits, hrStorageSize, hrStorageUsed, ] )
         return d
 
     def onResult(self, result, config):
@@ -289,6 +289,9 @@ class SnmpMemPlugin(PythonDataSourcePlugin):
         hrStorageVirtMemTypeOid = '.1.3.6.1.2.1.25.2.1.3'
 
         StorageType = result[hrStorageType]
+        oid_mem = None
+        oid_paging = None
+
         log.debug('StorageType is %s \n' % (StorageType))
         for k,v in StorageType.iteritems():
             #log.debug('k is %s and v is %s \n' % (k,v))
@@ -296,10 +299,7 @@ class SnmpMemPlugin(PythonDataSourcePlugin):
                 oid_mem = k.split('.')[-1]
             elif v == hrStorageVirtMemTypeOid:
                 oid_paging = k.split('.')[-1]
-            else:
-                oid_mem = None
-                oid_paging = None
-
+        
         if oid_mem and oid_paging:
             usage_mem = result[hrStorageUsed]['.'+ hrStorageUsed + '.' + oid_mem]
             total_mem = result[hrStorageSize]['.'+ hrStorageSize + '.' + oid_mem]
@@ -360,5 +360,6 @@ class SnmpMemPlugin(PythonDataSourcePlugin):
         You can omit this method if you want the result of either the
         onSuccess or onError method to be used without further processing.
         """
+        self._snmp_proxy.close()
         return result
 
