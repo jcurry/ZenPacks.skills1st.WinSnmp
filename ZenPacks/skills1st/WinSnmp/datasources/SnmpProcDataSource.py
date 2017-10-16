@@ -261,13 +261,13 @@ class SnmpProcPlugin(PythonDataSourcePlugin):
                 }],
             }
  
-    def onComplete(self, result, config):
-        """
-        Called last for success and error.
- 
-        You can omit this method if you want the result of either the
-        onSuccess or onError method to be used without further processing.
-        """
-        self._snmp_proxy.close()
-        return result
+#    def onComplete(self, result, config):
+#        """
+#        Called last for success and error.
+# 
+#        You can omit this method if you want the result of either the
+#        onSuccess or onError method to be used without further processing.
+#        """
+#        self._snmp_proxy.close()
+#        return result
 

@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:zcml="http://namespaces.zope.org/zcml">
+
+    <browser:resourceDirectory
+             name="winservicesnmppython"
+             directory="resources"
+             />
+    <browser:viewlet
+             name="js-winservicesnmppython"
+             paths="/++resource++winservicesnmppython/winservicesnmppython.js"
+             weight="10"
+             manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+             class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+             permission="zope2.Public"
+             />
+
+    <!-- Info Adapter for new WinServiceSNMPPython component -->
+
+    <adapter factory=".info.WinServiceSNMPPythonInfo"
+             for=".WinServiceSNMPPython.WinServiceSNMPPython"
+             provides=".interfaces.IWinServiceSNMPPythonInfo"
+             />
+
 
     <!-- Info Adapters: DataSources
 
@@ -19,15 +41,16 @@
         />
 
     <adapter
-        provides=".datasources.SnmpMemDataSource.ISnmpMemDataSourceInfo"
-        for=".datasources.SnmpMemDataSource.SnmpMemDataSource"
-        factory=".datasources.SnmpMemDataSource.SnmpMemDataSourceInfo"
-        />
-
-    <adapter
         provides=".datasources.CmdSnmpCpuDataSource.ICmdSnmpCpuDataSourceInfo"
         for=".datasources.CmdSnmpCpuDataSource.CmdSnmpCpuDataSource"
         factory=".datasources.CmdSnmpCpuDataSource.CmdSnmpCpuDataSourceInfo"
+        />
+
+
+    <adapter
+        provides=".datasources.SnmpMemDataSource.ISnmpMemDataSourceInfo"
+        for=".datasources.SnmpMemDataSource.SnmpMemDataSource"
+        factory=".datasources.SnmpMemDataSource.SnmpMemDataSourceInfo"
         />
 
     <adapter

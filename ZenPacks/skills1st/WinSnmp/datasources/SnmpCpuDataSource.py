@@ -11,6 +11,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from pynetsnmp.twistedsnmp import AgentProxy
+import traceback
  
 # Setup logging
 import logging
@@ -260,13 +261,15 @@ class SnmpCpuPlugin(PythonDataSourcePlugin):
         """
         ds0 = config.datasources[0]
         # Open the Snmp AgentProxy connection
-        self._snmp_proxy = get_snmp_proxy(ds0, config)
-
-        # NB NB NB - When getting scalars, they must all come from the SAME snmp table
-
-        # Now get data - 1 scalar OIDs
-        d=getTableStuff(self._snmp_proxy, [ hrProcessorLoad,])
-        return d
+        try:
+            self._snmp_proxy = get_snmp_proxy(ds0, config)
+            # NB NB NB - When getting scalars, they must all come from the SAME snmp table
+            # Now get data - 1 scalar OIDs
+            d=getTableStuff(self._snmp_proxy, [ hrProcessorLoad,])
+            #self._snmp_proxy.close()
+            return d
+        except Exception:
+            log.warn('Exception in collect %s ' % (traceback.format_exc()))
 
 
 
@@ -350,13 +353,22 @@ class SnmpCpuPlugin(PythonDataSourcePlugin):
                 }],
             }
  
-    def onComplete(self, result, config):
-        """
-        Called last for success and error.
+#    def onComplete(self, result, config):
+        #"""
+        #Called last for success and error.
  
-        You can omit this method if you want the result of either the
-        onSuccess or onError method to be used without further processing.
-        """
-        self._snmp_proxy.close()
-        return result
+        #You can omit this method if you want the result of either the
+        #onSuccess or onError method to be used without further processing.
+        #"""
+#        log.debug(' In close - before close. Result is %s ' % (result))
+#        try:
+#            log.debug('In try of onComplete befor close')
+#            self._snmp_proxy.close()
+#            log.debug('In try of onComplete after close')
+#        except (KeyError, IndexError, AttributeError, TypeError), errorInfo:
+#            log.debug('In except of onComplete')
+#            log.debug( ' Error in proxy close %s' % (  errorInfo))
+            #pass
+
+#        return result
 
