@@ -1083,7 +1083,7 @@ Service Operating state should be 1 for Up
 ['PythonWinServiceOpState_svSvcOperatingState']
 </property>
 <property label="Enabled" type="boolean" id="enabled" mode="w" >
-True
+False
 </property>
 <property type="string" id="minval" mode="w" >
 1
@@ -1217,7 +1217,8 @@ if evt.summary.startswith('threshold of Service Operating State') and evt.compon
         evt.summary = "Windows service '%s' is running" % (evt.component)
         evt.message = "Windows service '%s' is running" % (evt.component)
 else:
-    evt._action = 'drop'
+    #evt._action = 'drop'
+    pass
 </property>
 </object>
 <!-- ('', 'zport', 'dmd', 'Mibs', 'mibs', 'LanMgr-Mib-II-MIB') -->
