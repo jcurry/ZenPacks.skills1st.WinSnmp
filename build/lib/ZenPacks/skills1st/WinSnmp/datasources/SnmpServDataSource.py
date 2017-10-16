@@ -10,26 +10,75 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-import os
-import subprocess
-from twisted.internet import defer
- 
+from pynetsnmp.twistedsnmp import AgentProxy
+
 # Setup logging
 import logging
 log = logging.getLogger('zen.PythonWinSnmp')
 
-class CmdSnmpCpuDataSource(PythonDataSource):
-    """ Get  CPU data for Windows devices
-        using SNMP """
+svSvcNumber = '.1.3.6.1.4.1.77.1.2.2.0'
+
+def getSnmpV3Args(ds0):
+    snmpv3Args = []
+    if '3' in ds0.zSnmpVer:
+        if ds0.zSnmpPrivType:
+            snmpv3Args += ['-l', 'authPriv']
+            snmpv3Args += ['-x', ds0.zSnmpPrivType]
+            snmpv3Args += ['-X', ds0.zSnmpPrivPassword]
+        elif ds0.zSnmpAuthType:
+            snmpv3Args += ['-l', 'authNoPriv']
+        else:
+            snmpv3Args += ['-l', 'noAuthNoPriv']
+        if ds0.zSnmpAuthType:
+            snmpv3Args += ['-a', ds0.zSnmpAuthType]
+            snmpv3Args += ['-A', ds0.zSnmpAuthPassword]
+            snmpv3Args += ['-u', ds0.zSnmpSecurityName]
+    return snmpv3Args
+
+def get_snmp_proxy(ds0, config):
+    snmpV3Args = getSnmpV3Args(ds0)
+    log.debug( 'snmpV3Args are %s ' % (snmpV3Args))
+    snmp_proxy = AgentProxy(
+        ip = ds0.manageIp,
+        port=int(ds0.zSnmpPort),
+        timeout=ds0.zSnmpTimeout,
+        snmpVersion=ds0.zSnmpVer,
+        community=ds0.zSnmpCommunity,
+        cmdLineArgs=snmpV3Args,
+        protocol=None,
+        allowCache=False
+        )
+    snmp_proxy.open()
+    return snmp_proxy
+
+
+def getScalarStuff(snmp_proxy, scalarOIDstrings):
+    # scalarOIDstring must be a list
+    # NB scalarOIDstrings MUST all come from the same SNMP table or you get no data returned
+    # NB Windows net-snmp agent 5.5.0-1 return null dictionary if
+    #     input list is > 1 oid - maybe ?????
+    # Agent Proxy get returns dict of {oid_str : <value>}
+    log.debug('In getScalarStuff - snmp_proxy is %s and scalarOIDstrings is %s \n' % (snmp_proxy, scalarOIDstrings))
+    d=snmp_proxy.get(scalarOIDstrings)
+    return d
+
+def getTableStuff(snmp_proxy, OIDstrings):
+    d=snmp_proxy.getTable(OIDstrings)
+    return d
+
+
+class SnmpServDataSource(PythonDataSource):
+    """ Get  number of services
+        for Windows devices using SNMP """
  
     ZENPACKID = 'ZenPacks.skills1st.WinSnmp'
  
     # Friendly name for your data source type in the drop-down selection.
-    sourcetypes = ('CmdSnmpCpuDataSource',)
+    sourcetypes = ('SnmpServDataSource',)
     sourcetype = sourcetypes[0]
  
     component = '${here/id}'
-    eventClass = '/Perf/CPU'
+    eventClass = '/Perf/Snmp'
 
     # Custom fields in the datasource - with default values
     #    (which can be overriden in template )
@@ -37,10 +86,9 @@ class CmdSnmpCpuDataSource(PythonDataSource):
     ipAddress = '${dev/manageIp}'
     snmpVer = '${dev/zSnmpVer}'
     snmpCommunity = '${dev/zSnmpCommunity}'
-    # cycle is redundant here - cycletime is standard and defaults to 300
-    #cycle = '${here/cycle}'
+    # cycletime is standard and defaults to 300
 
-    cycletime = 120
+    cycletime = 300
 
     _properties = PythonDataSource._properties + (
         {'id': 'hostname', 'type': 'string', 'mode': 'w'},
@@ -50,75 +98,38 @@ class CmdSnmpCpuDataSource(PythonDataSource):
     )
 
     # Collection plugin for this type. Defined below in this file.
-    plugin_classname = ZENPACKID + '.datasources.CmdSnmpCpuDataSource.CmdSnmpCpuPlugin'
- 
-
+    plugin_classname = ZENPACKID + '.datasources.SnmpServDataSource.SnmpServPlugin'
+    # 
     def addDataPoints(self):
-        if not self.datapoints._getOb('CPU1', None):
-            self.manage_addRRDDataPoint('CPU1')
-        if not self.datapoints._getOb('CPU2', None):
-            self.manage_addRRDDataPoint('CPU2')
-        if not self.datapoints._getOb('CPU3', None):
-            self.manage_addRRDDataPoint('CPU3')
-        if not self.datapoints._getOb('CPU4', None):
-            self.manage_addRRDDataPoint('CPU4')
-        if not self.datapoints._getOb('CPU5', None):
-            self.manage_addRRDDataPoint('CPU5')
-        if not self.datapoints._getOb('CPU6', None):
-            self.manage_addRRDDataPoint('CPU6')
-        if not self.datapoints._getOb('CPU7', None):
-            self.manage_addRRDDataPoint('CPU7')
-        if not self.datapoints._getOb('CPU8', None):
-            self.manage_addRRDDataPoint('CPU8')
-        if not self.datapoints._getOb('CPU9', None):
-            self.manage_addRRDDataPoint('CPU9')
-        if not self.datapoints._getOb('CPU10', None):
-            self.manage_addRRDDataPoint('CPU10')
-        if not self.datapoints._getOb('CPU11', None):
-            self.manage_addRRDDataPoint('CPU11')
-        if not self.datapoints._getOb('CPU12', None):
-            self.manage_addRRDDataPoint('CPU12')
-        if not self.datapoints._getOb('CPU13', None):
-            self.manage_addRRDDataPoint('CPU13')
-        if not self.datapoints._getOb('CPU14', None):
-            self.manage_addRRDDataPoint('CPU14')
-        if not self.datapoints._getOb('CPU15', None):
-            self.manage_addRRDDataPoint('CPU15')
-        if not self.datapoints._getOb('CPU16', None):
-            self.manage_addRRDDataPoint('CPU16')
-        if not self.datapoints._getOb('CPU1', None):
-            self.manage_addRRDDataPoint('CPU1')
-        if not self.datapoints._getOb('Total', None):
-            self.manage_addRRDDataPoint('Total')
+        if not self.datapoints._getOb('svSvcNumber', None):
+            self.manage_addRRDDataPoint('svSvcNumber')
 
-class ICmdSnmpCpuDataSourceInfo(IRRDDataSourceInfo):
+class ISnmpServDataSourceInfo(IRRDDataSourceInfo):
     """Interface that creates the web form for this data source type."""
  
-    #cycle = schema.TextLine(title=_t(u'My Cycle (seconds)'))
     hostname = schema.TextLine(
         title=_t(u'Host Name'),
-        group=_t('CmdSnmpCpuDataSource'))
+        group=_t('SnmpServDataSource'))
     ipAddress = schema.TextLine(
         title=_t(u'IP Address'),
-        group=_t('CmdSnmpCpuDataSource'))
+        group=_t('SnmpServDataSource'))
     snmpVer = schema.TextLine(
         title=_t(u'SNMP Version'),
-        group=_t('CmdSnmpCpuDataSource'))
+        group=_t('SnmpServDataSource'))
     snmpCommunity = schema.TextLine(
         title=_t(u'SNMP Community'),
-        group=_t('CmdSnmpCpuDataSource'))
+        group=_t('SnmpServDataSource'))
 
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
  
  
-class CmdSnmpCpuDataSourceInfo(RRDDataSourceInfo):
-    """Adapter between ICmdSnmpCpuDataSourceInfo and CmdSnmpCpuDataSource."""
+class SnmpServDataSourceInfo(RRDDataSourceInfo):
+    """Adapter between ISnmpServDataSourceInfo and SnmpServDataSource."""
  
-    implements(ICmdSnmpCpuDataSourceInfo)
-    adapts(CmdSnmpCpuDataSource)
+    implements(ISnmpServDataSourceInfo)
+    adapts(SnmpServDataSource)
  
-    #cycle = ProxyProperty('cycle')
     hostname = ProxyProperty('hostname')
     ipAddress = ProxyProperty('ipAddress')
     snmpVer = ProxyProperty('snmpVer')
@@ -130,18 +141,27 @@ class CmdSnmpCpuDataSourceInfo(RRDDataSourceInfo):
     testable = False
     #testable = True
  
-class CmdSnmpCpuPlugin(PythonDataSourcePlugin):
+class SnmpServPlugin(PythonDataSourcePlugin):
     """
-    Collection plugin class for CmdSnmpCpuDataSource.
+    Collection plugin class for SnmpServDataSource.
  
     """
- 
-    # List of device attributes you'll need to do collection.
+    # List of device attributes you might need to do collection.
     proxy_attributes = (
         'zSnmpVer',
         'zSnmpCommunity',
+        'zSnmpPort',
+        'zSnmpMonitorIgnore',
+        'zSnmpAuthPassword',
+        'zSnmpAuthType',
+        'zSnmpPrivPassword',
+        'zSnmpPrivType',
+        'zSnmpSecurityName',
+        'zSnmpTimeout',
+        'zSnmpTries',
+        'zMaxOIDPerRequest',
         )
- 
+
     @classmethod
     def config_key(cls, datasource, context):
         """
@@ -186,53 +206,6 @@ class CmdSnmpCpuPlugin(PythonDataSourcePlugin):
         proxy_attributes as mentioned above.
         """
         params = {}
-        params['snmpVer'] = datasource.talesEval(datasource.snmpVer, context)
-        params['snmpCommunity'] = datasource.talesEval(datasource.snmpCommunity, context)
-
-        # Get path to executable file, starting from this file
-        #    which is in ZenPack base dir/datasources
-        # Executables are in ZenPack base dir / libexec
-
-        thisabspath = os.path.abspath(__file__)
-        (filedir, tail) = os.path.split(thisabspath)
-        libexecdir = filedir + '/../libexec'
-
-        # script is wincpu.py taking 3 parameters, hostname or IP, zSnmpVer, zSnmpCommunity
-        cmdparts = [ os.path.join(libexecdir, 'wincpu.py') ]
-
-        # context is the object that the template is applied to  - either a device or a component
-        #  In this case it is a device with all the attributes and methods of a device
-
-        if context.manageIp:
-            cmdparts.append(context.manageIp)
-        elif context.titleOrId():
-            cmdparts.append(context.titleOrId())
-        else:
-            cmdparts.append('UnknownHostOrIp')
-        # This gets parameters from the template
-        if not params['snmpVer']:
-            cmdparts.append('v1')
-        else:
-            cmdparts.append(params['snmpVer'])
-        if not params['snmpCommunity']:
-            cmdparts.append('public')
-        else:
-            cmdparts.append(params['snmpCommunity'])
-
-        """ 
-        # This gets parameters direct from the device using context
-        if not context.zSnmpVer:
-            cmdparts.append('v1')
-        else:
-            cmdparts.append(context.zSnmpVer)
-        if not context.zSnmpCommunity:
-            cmdparts.append('public')
-        else:
-            cmdparts.append(context.zSnmpCommunity)
-       """
-            
-        params['cmd'] = cmdparts           
-
         log.debug(' params is %s \n' % (params))
         return params
 
@@ -248,37 +221,16 @@ class CmdSnmpCpuPlugin(PythonDataSourcePlugin):
         This method really is run by zenpython daemon. Check zenpython.log
         for any log messages.
         """
+
         ds0 = config.datasources[0]
+        # Open the Snmp AgentProxy connection
+        self._snmp_proxy = get_snmp_proxy(ds0, config)
 
-        # Next 3 lines use params to get cmd
-        cmd = ds0.params['cmd']
-        log.debug(' cmd is %s \n ' % (cmd) )
-        cmd_process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # NB NB NB - When getting scalars, they must all come from the SAME snmp table
 
-        """
-        # or this lot if you dont use params and do use device proxy attributes
-        # Get path to executable file, starting from this file
-        #    which is in ZenPack base dir/datasources
-        # Executables are in ZenPack base dir / libexec
-
-        thisabspath = os.path.abspath(__file__)
-        (filedir, tail) = os.path.split(thisabspath)
-        libexecdir = filedir + '/../libexec'
-
-        # script is wincpu.py taking 3 parameters, hostname or IP, zSnmpVer, zSnmpCommunity
-        cmd = [ os.path.join(libexecdir, 'wincpu.py'), ds0.manageIp, ds0.zSnmpVer, ds0.zSnmpCommunity ]
-        log.debug(' cmd is %s \n ' % (cmd) )
-        cmd_process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        """
-
-        cmd_out = cmd_process.communicate()
-        dd = defer.Deferred()
-        # cmd_process.communicate() returns a tuple of (stdoutdata, stderrordata)
-        if cmd_process.returncode == 0:
-            dd.callback(cmd_out[0])
-        else:
-            dd.errback(cmd_out[1])
-        return dd
+        # Now get data - 1 scalar OIDs
+        d=getScalarStuff(self._snmp_proxy, [ svSvcNumber,]) 
+        return d
 
     def onResult(self, result, config):
         """
@@ -340,17 +292,19 @@ class CmdSnmpCpuPlugin(PythonDataSourcePlugin):
         #     ZenPack, datasources directory
 
         data = self.new_data()
-        ds0 = config.datasources[0]
 
-        log.debug( 'In success - data is %s  ' % (data))
-        # Format of output in script result is
-        # OK|CPU1=38 CPU2=37 Total=37
-        dataVarVals = result.split("|")[1].split()
-        log.debug('split result is %s \n ' % (dataVarVals))
-        datapointDict={}
-        for d in dataVarVals:
-            myvar,myval = d.split("=")
-            datapointDict[myvar] = myval
+        # Format of result output is a dict with { oid:value } - INCLUDING leading dot !!
+        #       svSvcNumber = '.1.3.6.1.4.1.77.1.2.2.0'
+        # Remember datapoint name is svSvcNumber
+        # This is being kind to users giving them a datapoint that is somewhat meaningful
+        # If you want to be cruel, define the datapoint as the OID string and simply return
+        #   the results dictionary
+
+        datapointDict = {}
+        for k,v in result.iteritems():
+            if k == svSvcNumber:
+                datapointDict['svSvcNumber'] = v
+
         log.debug('datapointDict is %s \n ' % (datapointDict))
         data['values'] = {
                 None : datapointDict
@@ -359,10 +313,10 @@ class CmdSnmpCpuPlugin(PythonDataSourcePlugin):
         # You don't have to provide an event - comment this out if so
         data['events'].append({
                     'device': config.id,
-                    'summary': 'Snmp CPU data gathered using zenpython with wincpu script',
+                    'summary': 'service data gathered using zenpython with snmp',
                     'severity': 1,
                     'eventClass': '/App',
-                    'eventKey': 'PythonCmdSnmpCpu',
+                    'eventKey': 'PythonSnmpServ',
                     })
 
         data['maps'] = []
@@ -381,8 +335,8 @@ class CmdSnmpCpuPlugin(PythonDataSourcePlugin):
         log.debug( 'In OnError - result is %s and config is %s ' % (result, config))
         return {
             'events': [{
-                'summary': 'Error getting Snmp CPU data with zenpython: %s' % result,
-                'eventKey': 'PythonCmdSnmpCpu',
+                'summary': 'Error getting Snmp services data with zenpython: %s' % result,
+                'eventKey': 'PythonSnmpServ',
                 'severity': 4,
                 }],
             }
@@ -394,5 +348,11 @@ class CmdSnmpCpuPlugin(PythonDataSourcePlugin):
         You can omit this method if you want the result of either the
         onSuccess or onError method to be used without further processing.
         """
+        try:
+            if self._snmp_proxy:
+                self._snmp_proxy.close()
+        except:
+            log.debug( ' In except in onComplete')
         return result
+
 

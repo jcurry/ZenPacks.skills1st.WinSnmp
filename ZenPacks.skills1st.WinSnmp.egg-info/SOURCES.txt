@@ -20,12 +20,8 @@ ZenPacks/skills1st/WinSnmp/WinServiceSNMPPython.pyc
 ZenPacks/skills1st/WinSnmp/WinServiceSNMPPythonDevice.py
 ZenPacks/skills1st/WinSnmp/WinServiceSNMPPythonDevice.pyc
 ZenPacks/skills1st/WinSnmp/__init__.py
-ZenPacks/skills1st/WinSnmp/__init__.py_works
 ZenPacks/skills1st/WinSnmp/__init__.pyc
 ZenPacks/skills1st/WinSnmp/configure.zcml
-ZenPacks/skills1st/WinSnmp/configure.zcml_20171016
-ZenPacks/skills1st/WinSnmp/configure.zcml_withCmd
-ZenPacks/skills1st/WinSnmp/configure.zcml_works
 ZenPacks/skills1st/WinSnmp/info.py
 ZenPacks/skills1st/WinSnmp/info.pyc
 ZenPacks/skills1st/WinSnmp/interfaces.py
@@ -51,10 +47,6 @@ ZenPacks/skills1st/WinSnmp/datasources/SnmpWinServComponentDataSource.py
 ZenPacks/skills1st/WinSnmp/datasources/SnmpWinServComponentDataSource.pyc
 ZenPacks/skills1st/WinSnmp/datasources/__init__.py
 ZenPacks/skills1st/WinSnmp/datasources/__init__.pyc
-ZenPacks/skills1st/WinSnmp/datasources/hide_CmdSnmpCpuDataSource.py
-ZenPacks/skills1st/WinSnmp/datasources/hide_CmdSnmpMemDataSource.py
-ZenPacks/skills1st/WinSnmp/libexec/hide_wincpu.py
-ZenPacks/skills1st/WinSnmp/libexec/hide_winmem.py
 ZenPacks/skills1st/WinSnmp/migrate/ExampleMigration.py
 ZenPacks/skills1st/WinSnmp/migrate/ExampleMigration.pyc
 ZenPacks/skills1st/WinSnmp/migrate/__init__.py
@@ -64,8 +56,6 @@ ZenPacks/skills1st/WinSnmp/modeler/plugins/__init__.py
 ZenPacks/skills1st/WinSnmp/modeler/plugins/__init__.pyc
 ZenPacks/skills1st/WinSnmp/modeler/plugins/community/__init__.py
 ZenPacks/skills1st/WinSnmp/modeler/plugins/community/__init__.pyc
-ZenPacks/skills1st/WinSnmp/modeler/plugins/community/cmd/ExampleCMD.py.example
-ZenPacks/skills1st/WinSnmp/modeler/plugins/community/cmd/__init__.py
 ZenPacks/skills1st/WinSnmp/modeler/plugins/community/snmp/WinServicePythonMap.py
 ZenPacks/skills1st/WinSnmp/modeler/plugins/community/snmp/WinServicePythonMap.pyc
 ZenPacks/skills1st/WinSnmp/modeler/plugins/community/snmp/__init__.py
