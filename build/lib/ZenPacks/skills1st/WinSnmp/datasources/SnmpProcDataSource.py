@@ -231,13 +231,13 @@ class SnmpProcPlugin(PythonDataSourcePlugin):
                 }
 
         # You don't have to provide an event - comment this out if so
-        data['events'].append({
-                    'device': config.id,
-                    'summary': 'process data gathered using zenpython with snmp',
-                    'severity': 1,
-                    'eventClass': '/App',
-                    'eventKey': 'PythonSnmpProc',
-                    })
+        #data['events'].append({
+        #            'device': config.id,
+        #            'summary': 'process data gathered using zenpython with snmp',
+        #            'severity': 1,
+        #            'eventClass': '/App',
+        #            'eventKey': 'PythonSnmpProc',
+        #            })
 
         data['maps'] = []
 

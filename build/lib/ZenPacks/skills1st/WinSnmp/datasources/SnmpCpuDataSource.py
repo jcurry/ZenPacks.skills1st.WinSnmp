@@ -323,13 +323,13 @@ class SnmpCpuPlugin(PythonDataSourcePlugin):
                 }
 
         # You don't have to provide an event - comment this out if so
-        data['events'].append({
-                    'device': config.id,
-                    'summary': 'Snmp cpu data gathered using zenpython with SNMP',
-                    'severity': 1,
-                    'eventClass': '/App',
-                    'eventKey': 'PythonSnmpCpu',
-                    })
+        #data['events'].append({
+        #            'device': config.id,
+        #            'summary': 'Snmp cpu data gathered using zenpython with SNMP',
+        #            'severity': 1,
+        #            'eventClass': '/App',
+        #            'eventKey': 'PythonSnmpCpu',
+        #            })
 
         data['maps'] = []
 

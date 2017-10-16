@@ -311,13 +311,13 @@ class SnmpServPlugin(PythonDataSourcePlugin):
                 }
 
         # You don't have to provide an event - comment this out if so
-        data['events'].append({
-                    'device': config.id,
-                    'summary': 'service data gathered using zenpython with snmp',
-                    'severity': 1,
-                    'eventClass': '/App',
-                    'eventKey': 'PythonSnmpServ',
-                    })
+        #data['events'].append({
+        #            'device': config.id,
+        #            'summary': 'service data gathered using zenpython with snmp',
+        #            'severity': 1,
+        #            'eventClass': '/App',
+        #            'eventKey': 'PythonSnmpServ',
+        #            })
 
         data['maps'] = []
 

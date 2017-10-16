@@ -323,13 +323,13 @@ class SnmpMemPlugin(PythonDataSourcePlugin):
                 }
 
         # You don't have to provide an event - comment this out if so
-        data['events'].append({
-                    'device': config.id,
-                    'summary': 'Snmp memory data gathered using zenpython with SNMP',
-                    'severity': 1,
-                    'eventClass': '/App',
-                    'eventKey': 'PythonSnmpMem',
-                    })
+        #data['events'].append({
+        #            'device': config.id,
+        #            'summary': 'Snmp memory data gathered using zenpython with SNMP',
+        #            'severity': 1,
+        #            'eventClass': '/App',
+        #            'eventKey': 'PythonSnmpMem',
+        #            })
 
         data['maps'] = []
 
