@@ -55,12 +55,13 @@ Note that you need to remodel your devices for the above to take effect.
 Keep in mind that zWinServiceSNMPIgnoreNames is constantly in use. If you put the same service name in both 
 zWinServiceSNMPIgnoreNames and zWinServiceSNMPMonitorNames it will be ignored. 
 
+The default is that all modeled services are monitored.
+
 Templates
 =========
 
     * PyTestSnmpCpu  monitors CPU utilisation for each processor and the average total. Uses Python to drive SNMP
-    * PyTestSnmpMem  monitors memory and paging using Python to drive SNMP
-    * PyTestCmdMemCpu  monitors cpu and memory / paging using Python to drive commands. This template is not bound by default.
+    * PyTestSnmpMem  monitors memory and paging using Python to drive SNMP. Adds total swap to the device os relationship.
     * PyTestSnmpServProc  monitors number of processes and number of services. Uses Python to drive SNMP.
     * WinServiceSNMPPython in /Server/Windows/Snmp: This template is required for monitoring services. Do not bind this template to the device. Make sure the template is in the class that the device is in (or a higher class). The template will automatically be used for the windows services components.
 
@@ -89,7 +90,7 @@ Requirements & Dependencies
     * Zenoss Versions Supported: 4.x
     * External Dependencies: 
     * ZenPack Dependencies: ZenPacks.zenoss.PythonCollector at least 1.6 - earlier versions will not work
-    * Installation Notes: Restart zenhub and zopectl after installation
+    * Installation Notes: Restart zenhub, zopectl and zenpython after installation
     * Configuration:
 
 
@@ -119,7 +120,7 @@ $ZENHOME/local.  Install from $ZENHOME/local with:
 
 zenpack --link --install ZenPacks.skills1st.WinSnmp
 
-Restart zenhub and zopectl after installation.
+Restart zenhub, zopectl and zenpython after installation.
 
 
 
@@ -127,11 +128,20 @@ Change History
 ==============
 * 1.0.0
    * Initial Release
+* 1.0.2
+   * Check made to close snmp session.
+   * SnmpWinServComponentDataSource datasource generates event if service not found
+   * SnmpMemDataSource datasource updates model with totalSwap on os relation  
+* 1.1
+   * justPython branch
+   * cleans out COMMAND monitoring and clears up objects.xml
+
+
 
 Screenshots
 ===========
 
 .. External References Below. Nothing Below This Line Should Be Rendered
 
-.. _Latest Package for Python 2.7: https://github.com/jcurry/ZenPacks.skills1st.WinSnmp/blob/master/dist/ZenPacks.skills1st.WinSnmp-1.0.1-py2.7.egg?raw=true
+.. _Latest Package for Python 2.7: https://github.com/jcurry/ZenPacks.skills1st.WinSnmp/blob/justPython/dist/ZenPacks.skills1st.WinSnmp-1.1-py2.7.egg?raw=true
 
