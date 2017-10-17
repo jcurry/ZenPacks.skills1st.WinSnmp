@@ -135,6 +135,8 @@ Change History
 * 1.1
    * justPython branch
    * cleans out COMMAND monitoring and clears up objects.xml
+   * threshold on Service Operating State in WinServiceSNMPPython template now disabled - Critical event generated when service
+     unable in SnmpWinServComponentDataSource datasource.
 
 
 
