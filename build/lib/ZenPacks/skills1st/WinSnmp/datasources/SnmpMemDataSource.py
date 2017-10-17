@@ -6,6 +6,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from Products.DataCollector.plugins.DataMaps import ObjectMap
+
  
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -331,7 +333,10 @@ class SnmpMemPlugin(PythonDataSourcePlugin):
         #            'eventKey': 'PythonSnmpMem',
         #            })
 
-        data['maps'] = []
+        #data['maps'] = []
+        # Apply the totalSwap value to the model - totalSwap scalar attribute on the os component
+        data['maps'].append(ObjectMap({"totalSwap": datapointDict['PagingTotal']}, compname="os"))
+
 
         log.debug( 'data is %s ' % (data))
         return data
