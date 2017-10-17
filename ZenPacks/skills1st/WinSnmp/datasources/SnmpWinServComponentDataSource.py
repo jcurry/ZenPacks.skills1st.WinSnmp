@@ -342,17 +342,35 @@ class SnmpWinServComponentPlugin(PythonDataSourcePlugin):
             #   so next line will fail - try/except the failure and set the value to 0 = Stopped
             try:
                 data['values'][ds.component] = { 'svSvcOperatingState' : valuepointDict[ds.component]}
+                eventSum = 'Service %s is up. ' % (ds.component)
+                data['events'].append({
+                            'device': config.id,
+                            'summary': eventSum,
+                            'component' : ds.component,
+                            'severity': 0,
+                            'eventClass': '/Status/WinServiceSNMPPython',
+                            'eventKey': 'PythonSnmpWinServComponent',
+                            })
             except:
                 data['values'][ds.component] = { 'svSvcOperatingState' : 0 }
+                eventSum = 'Service %s is down. ' % (ds.component)
+                data['events'].append({
+                            'device': config.id,
+                            'summary': eventSum,
+                            'component' : ds.component,
+                            'severity': 5,
+                            'eventClass': '/Status/WinServiceSNMPPython',
+                            'eventKey': 'PythonSnmpWinServComponent',
+                            })
 
         # You don't have to provide an event - comment this out if so
-        data['events'].append({
-                    'device': config.id,
-                    'summary': 'component service data gathered using zenpython with snmp',
-                    'severity': 1,
-                    'eventClass': '/App',
-                    'eventKey': 'PythonSnmpWinServComponent',
-                    })
+        #data['events'].append({
+        #            'device': config.id,
+        #            'summary': 'component service data gathered using zenpython with snmp',
+        #            'severity': 1,
+        #            'eventClass': '/App',
+        #            'eventKey': 'PythonSnmpWinServComponent',
+        #            })
 
         data['maps'] = []
 
@@ -383,6 +401,10 @@ class SnmpWinServComponentPlugin(PythonDataSourcePlugin):
         You can omit this method if you want the result of either the
         onSuccess or onError method to be used without further processing.
         """
-        self._snmp_proxy.close()
+        try:
+            if self._snmp_proxy:
+                self._snmp_proxy.close()
+        except:
+            log.debug( ' In except in onComplete')
         return result
 

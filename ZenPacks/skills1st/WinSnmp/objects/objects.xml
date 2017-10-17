@@ -297,10 +297,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -470,10 +470,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -780,10 +780,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -1117,10 +1117,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -1214,10 +1214,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -1418,10 +1418,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -1475,10 +1475,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -1649,10 +1649,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -1794,10 +1794,10 @@ False
 False
 </property>
 <property type="int" id="miny" mode="w" >
--1
+None
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+None
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -1894,7 +1894,8 @@ if evt.summary.startswith('threshold of Service Operating State') and evt.compon
         evt.summary = "Windows service '%s' is running" % (evt.component)
         evt.message = "Windows service '%s' is running" % (evt.component)
 else:
-    evt._action = 'drop'
+    #evt._action = 'drop'
+    pass
 </property>
 </object>
 <!-- ('', 'zport', 'dmd', 'Mibs', 'mibs', 'LanMgr-Mib-II-MIB') -->

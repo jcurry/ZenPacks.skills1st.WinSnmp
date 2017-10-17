@@ -311,13 +311,13 @@ class SnmpServPlugin(PythonDataSourcePlugin):
                 }
 
         # You don't have to provide an event - comment this out if so
-        data['events'].append({
-                    'device': config.id,
-                    'summary': 'service data gathered using zenpython with snmp',
-                    'severity': 1,
-                    'eventClass': '/App',
-                    'eventKey': 'PythonSnmpServ',
-                    })
+        #data['events'].append({
+        #            'device': config.id,
+        #            'summary': 'service data gathered using zenpython with snmp',
+        #            'severity': 1,
+        #            'eventClass': '/App',
+        #            'eventKey': 'PythonSnmpServ',
+        #            })
 
         data['maps'] = []
 
@@ -348,6 +348,11 @@ class SnmpServPlugin(PythonDataSourcePlugin):
         You can omit this method if you want the result of either the
         onSuccess or onError method to be used without further processing.
         """
-        self._snmp_proxy.close()
+        try:
+            if self._snmp_proxy:
+                self._snmp_proxy.close()
+        except:
+            log.debug( ' In except in onComplete')
         return result
+
 

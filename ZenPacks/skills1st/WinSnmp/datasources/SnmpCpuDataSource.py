@@ -11,6 +11,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from pynetsnmp.twistedsnmp import AgentProxy
+import traceback
  
 # Setup logging
 import logging
@@ -260,13 +261,15 @@ class SnmpCpuPlugin(PythonDataSourcePlugin):
         """
         ds0 = config.datasources[0]
         # Open the Snmp AgentProxy connection
-        self._snmp_proxy = get_snmp_proxy(ds0, config)
-
-        # NB NB NB - When getting scalars, they must all come from the SAME snmp table
-
-        # Now get data - 1 scalar OIDs
-        d=getTableStuff(self._snmp_proxy, [ hrProcessorLoad,])
-        return d
+        try:
+            self._snmp_proxy = get_snmp_proxy(ds0, config)
+            # NB NB NB - When getting scalars, they must all come from the SAME snmp table
+            # Now get data - 1 scalar OIDs
+            d=getTableStuff(self._snmp_proxy, [ hrProcessorLoad,])
+            #self._snmp_proxy.close()
+            return d
+        except Exception:
+            log.warn('Exception in collect %s ' % (traceback.format_exc()))
 
 
 
@@ -320,13 +323,13 @@ class SnmpCpuPlugin(PythonDataSourcePlugin):
                 }
 
         # You don't have to provide an event - comment this out if so
-        data['events'].append({
-                    'device': config.id,
-                    'summary': 'Snmp cpu data gathered using zenpython with SNMP',
-                    'severity': 1,
-                    'eventClass': '/App',
-                    'eventKey': 'PythonSnmpCpu',
-                    })
+        #data['events'].append({
+        #            'device': config.id,
+        #            'summary': 'Snmp cpu data gathered using zenpython with SNMP',
+        #            'severity': 1,
+        #            'eventClass': '/App',
+        #            'eventKey': 'PythonSnmpCpu',
+        #            })
 
         data['maps'] = []
 
@@ -357,6 +360,10 @@ class SnmpCpuPlugin(PythonDataSourcePlugin):
         You can omit this method if you want the result of either the
         onSuccess or onError method to be used without further processing.
         """
-        self._snmp_proxy.close()
+        try:
+            if self._snmp_proxy:
+                self._snmp_proxy.close()
+        except:
+            log.debug( ' In except in onComplete')
         return result
 
